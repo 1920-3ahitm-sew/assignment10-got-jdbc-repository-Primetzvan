@@ -1,0 +1,23 @@
+= got-jdbc-repository
+:experimental:
+
+.How to start
+|===
+|command |description
+
+a|
+----
+mvn clean generate-resources
+----
+|the target folder will be removed and the default phase "generate-resources" for all modules will be executed for all submodules
+
+a|
+----
+mvn clean package
+----
+|the target folder will be removed and the doc will be generated and the source code compiled and packaged. Use Apache Shade for including the dependencies in the jar and creating the manifest-file.
+
+|kbd:[Run in IDE]
+|Run the Tests
+
+|===

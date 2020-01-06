@@ -65,7 +65,7 @@ public class Person {
 
             Person p = ((Person) obj);
 
-            return (p.getId() == this.getId() && p.getName().equals(this.getName()) && p.getCity().equals(this.getCity()) && p.getHouse().equals(this.getHouse()));
+            return (p.getName().equals(this.getName()) && p.getCity().equals(this.getCity()) && p.getHouse().equals(this.getHouse()));
 
         }
 

@@ -24,7 +24,7 @@ public class PersonRepository implements Repository {
 
     public static synchronized PersonRepository getInstance() {
 
-        if (instance == null){
+        if (instance == null) {
             instance = new PersonRepository();
         }
 
@@ -51,36 +51,34 @@ public class PersonRepository implements Repository {
 
     public void deleteAll() {
 
-            try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
-                try (Statement stmt = conn.createStatement()) {
-                    String query = "DELETE FROM " + TABLE_NAME;
-                    int deletedRows=stmt.executeUpdate(query);
-                    if(deletedRows>0){
-                        System.out.println("Deleted All Rows In The Table Successfully...");
-                    }else{
-                        System.out.println("Table already empty.");
-                    }
-
-                } catch(SQLException s){
-                    System.out.println("Deleted All Rows In  Table Error. ");
-                    s.printStackTrace();
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            try (Statement stmt = conn.createStatement()) {
+                String query = "DELETE FROM " + TABLE_NAME;
+                int deletedRows = stmt.executeUpdate(query);
+                if (deletedRows > 0) {
+                    System.out.println("Deleted All Rows In The Table Successfully...");
+                } else {
+                    System.out.println("Table already empty.");
                 }
-            }catch (Exception e){
-                System.err.println(e.getMessage());
-            }
-        }
 
+            } catch (SQLException s) {
+                System.out.println("Deleted All Rows In  Table Error. ");
+                s.printStackTrace();
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
 
     /**
-     *
      * Hat newPerson eine ID (id != null) so in der Tabelle die entsprechende Person gesucht und upgedated
      * Hat newPerson keine ID wird ein neuer Datensatz eingefügt.
-     *
+     * <p>
      * Wie man die generierte ID zurück erhält: https://stackoverflow.com/a/1915197
-     *
+     * <p>
      * Falls ein Fehler auftritt, wird nur die Fehlermeldung ausgegeben, der Programmlauf nicht abgebrochen
-     *
+     * <p>
      * Verwenden sie hier die privaten MEthoden update() und insert()
      *
      * @param newPerson
@@ -89,7 +87,7 @@ public class PersonRepository implements Repository {
     @Override
     public Person save(Person newPerson) {
 
-        if (newPerson.getId() != null){
+        if (newPerson.getId() != null) {
 
             update(newPerson);
             return newPerson;
@@ -102,7 +100,6 @@ public class PersonRepository implements Repository {
     }
 
     /**
-     *
      * Wie man die generierte ID erhält: https://stackoverflow.com/a/1915197
      *
      * @param personToSave
@@ -113,7 +110,7 @@ public class PersonRepository implements Repository {
         try (
                 Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO APP.PERSON (name,city,house) values (?,?,?)",
-                Statement.RETURN_GENERATED_KEYS);
+                        Statement.RETURN_GENERATED_KEYS);
         ) {
             statement.setString(1, personToSave.getName());
             statement.setString(2, personToSave.getCity());
@@ -129,8 +126,7 @@ public class PersonRepository implements Repository {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     personToSave.setId(generatedKeys.getLong(1));
-                }
-                else {
+                } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
@@ -142,19 +138,17 @@ public class PersonRepository implements Repository {
     }
 
     /**
-     *
      * @param personToSave
      * @return wenn erfolgreich --> Anzahl der eingefügten Zeilen, also 1
-     *         wenn nicht erfolgreich --> -1
+     * wenn nicht erfolgreich --> -1
      */
     private int update(Person personToSave) {
 
-        if (find(personToSave.getId()) == null){
+        if (find(personToSave.getId()) == null) {
             insert(personToSave);
             return 1;
 
         }
-
 
 
         return -1;
@@ -168,11 +162,11 @@ public class PersonRepository implements Repository {
                 String query = "DELETE FROM " + TABLE_NAME + " WHERE id = " + id;
                 int deletedRows = stmt.executeUpdate(query);
 
-            } catch(SQLException s){
+            } catch (SQLException s) {
                 System.out.println("Deleted All Rows In  Table Error. ");
                 s.printStackTrace();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
 
@@ -180,9 +174,7 @@ public class PersonRepository implements Repository {
     }
 
 
-
     /**
-     *
      * Finden Sie eine Person anhand Ihrer ID
      *
      * @param id
@@ -195,7 +187,7 @@ public class PersonRepository implements Repository {
                 String query = "SELECT * FROM " + TABLE_NAME;
                 ResultSet rs = stmt.executeQuery(query);
 
-                while(rs.next()) {
+                while (rs.next()) {
                     if (id == rs.getLong("id")) {
                         Person p = new Person(rs.getString("name"), rs.getString("city"), rs.getString("house"));
                         p.setId(id);
@@ -215,7 +207,6 @@ public class PersonRepository implements Repository {
     }
 
     /**
-     *
      * @param house Name des Hauses
      * @return Liste aller Personen des gegebenen Hauses
      */
@@ -227,14 +218,23 @@ public class PersonRepository implements Repository {
             try (Statement stmt = conn.createStatement()) {
 
                 String query = "SELECT * FROM " + TABLE_NAME;
+                ResultSet rs = stmt.executeQuery(query);
 
+                while (rs.next()) {
+
+                    String currentHouse = rs.getString("house");
+
+                    if (house.equals(currentHouse)) {
+                        persons.add(new Person(rs.getString("name"), rs.getString("city"), house));
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
 
-        return null;
+        return persons;
     }
 
 

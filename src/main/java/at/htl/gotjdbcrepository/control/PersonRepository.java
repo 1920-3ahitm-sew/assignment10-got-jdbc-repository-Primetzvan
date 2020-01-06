@@ -50,6 +50,23 @@ public class PersonRepository implements Repository {
 
     public void deleteAll() {
 
+            try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+                try (Statement stmt = conn.createStatement()) {
+                    String query = "DELETE FROM " + TABLE_NAME;
+                    int deletedRows=stmt.executeUpdate(query);
+                    if(deletedRows>0){
+                        System.out.println("Deleted All Rows In The Table Successfully...");
+                    }else{
+                        System.out.println("Table already empty.");
+                    }
+
+                } catch(SQLException s){
+                    System.out.println("Deleted All Rows In  Table Error. ");
+                    s.printStackTrace();
+                }
+            }catch (Exception e){
+                System.err.println(e.getMessage());
+            }
         }
 
 

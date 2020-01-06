@@ -162,7 +162,23 @@ public class PersonRepository implements Repository {
     @Override
     public void delete(long id) {
 
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            try (Statement stmt = conn.createStatement()) {
+                String query = "DELETE FROM " + TABLE_NAME + " WHERE id = " + id;
+                int deletedRows = stmt.executeUpdate(query);
+
+            } catch(SQLException s){
+                System.out.println("Deleted All Rows In  Table Error. ");
+                s.printStackTrace();
+            }
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+
+
     }
+
+
 
     /**
      *

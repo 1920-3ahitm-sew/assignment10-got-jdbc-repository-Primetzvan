@@ -164,6 +164,34 @@ class PersonRepositoryTest {
         org.assertj.db.api.Assertions.assertThat(personTable).isEmpty();
     }
 
+    @Test
+    void test00_checkDeleteOne() {
+
+        dropTable(TABLE_NAME);
+        setRepositoryInstanceToNull();
+
+        Person jakob = new Person("Jakob", "Bad Leonfelden", "Targaryen");
+        Person sarah = new Person("Sarah", "Gmunden", "Targaryen");
+        Person nina = new Person("Nina", "Altenberg", "Targaryen");
+        Person felix = new Person("Felix", "Leonding", "Targaryen");
+
+        PersonRepository personRepository = getInstance();
+        Person savedJakob = personRepository.save(jakob);
+        Person saveSarah = personRepository.save(sarah);
+        Long deleteId = saveSarah.getId();
+        Person saveNina = personRepository.save(nina);
+        Person saveFelix = personRepository.save(felix);
+
+        Table personTable = new Table(dataSource, TABLE_NAME);
+        output(personTable).toConsole();
+        org.assertj.db.api.Assertions.assertThat(personTable).hasNumberOfRows(4);
+        personRepository.delete(deleteId);
+        personTable = new Table(dataSource, TABLE_NAME);  // aktualisieren des table-Objekts
+        output(personTable).toConsole();
+        org.assertj.db.api.Assertions.assertThat(personTable).hasNumberOfRows(3);
+    }
+
+
     /**
      * Eine Person wird gespeichert. Es wird überprüft, ob ein Personenobjekt mit aktuelle ID
      * zurückgegeben wird

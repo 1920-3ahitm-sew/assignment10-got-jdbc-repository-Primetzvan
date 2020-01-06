@@ -16,11 +16,18 @@ public class PersonRepository implements Repository {
     private static PersonRepository instance;
 
     private PersonRepository() {
+
+        createTable();
+
     }
 
     public static synchronized PersonRepository getInstance() {
 
-        return null;
+        if (instance == null){
+            instance = new PersonRepository();
+        }
+
+        return instance;
     }
 
     private void createTable() {
@@ -43,7 +50,9 @@ public class PersonRepository implements Repository {
 
     public void deleteAll() {
 
-    }
+        }
+
+
 
     /**
      *
@@ -61,6 +70,9 @@ public class PersonRepository implements Repository {
      */
     @Override
     public Person save(Person newPerson) {
+
+
+
 
         return null;
     }

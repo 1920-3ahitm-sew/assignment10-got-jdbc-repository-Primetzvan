@@ -57,4 +57,21 @@ public class Person {
         return String.format("%s, %s, %s", name, city, house);
     }
 
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof Person){
+
+            Person p = ((Person) obj);
+
+            return (p.getId() == this.getId() && p.getName().equals(this.getName()) && p.getCity().equals(this.getCity()) && p.getHouse().equals(this.getHouse()));
+
+        }
+
+        return false;
+
+    }
 }
+
+

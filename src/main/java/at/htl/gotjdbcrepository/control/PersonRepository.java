@@ -179,9 +179,10 @@ public class PersonRepository implements Repository {
                 ResultSet rs = stmt.executeQuery(query);
 
                 while(rs.next()) {
-                    System.out.println(rs.getInt("id"));
-                    if (id == rs.getInt("id")) {
-                        return new Person(rs.getString("name"), rs.getString("city"), rs.getString("house"));
+                    if (id == rs.getLong("id")) {
+                        Person p = new Person(rs.getString("name"), rs.getString("city"), rs.getString("house"));
+                        p.setId(id);
+                        return p;
                     }
                 }
 

@@ -165,7 +165,7 @@ class PersonRepositoryTest {
     }
 
     @Test
-    void test00_checkDeleteOne() {
+    void test065_checkDeleteOne() {
 
         dropTable(TABLE_NAME);
         setRepositoryInstanceToNull();

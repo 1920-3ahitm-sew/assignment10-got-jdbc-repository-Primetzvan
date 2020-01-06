@@ -88,10 +88,16 @@ public class PersonRepository implements Repository {
     @Override
     public Person save(Person newPerson) {
 
+        if (newPerson.getId() != null){
+
+            update(newPerson);
+            return newPerson;
+
+        }
+
+        return insert(newPerson);
 
 
-
-        return null;
     }
 
     /**
@@ -131,7 +137,7 @@ public class PersonRepository implements Repository {
             e.printStackTrace();
         }
 
-        return null;
+        return personToSave;
     }
 
     /**
@@ -141,6 +147,14 @@ public class PersonRepository implements Repository {
      *         wenn nicht erfolgreich --> -1
      */
     private int update(Person personToSave) {
+
+        if (find(personToSave.getId()) == null){
+            insert(personToSave);
+            return 1;
+
+        }
+
+
 
         return -1;
     }
@@ -158,6 +172,26 @@ public class PersonRepository implements Repository {
      * @return die gefundene Person oder wenn nicht gefunden wird null zurückgegeben
      */
     public Person find(long id) {
+
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            try (Statement stmt = conn.createStatement()) {
+                String query = "SELECT * FROM " + TABLE_NAME;
+                ResultSet rs = stmt.executeQuery(query);
+
+                while(rs.next()) {
+                    System.out.println(rs.getInt("id"));
+                    if (id == rs.getInt("id")) {
+                        return new Person(rs.getString("name"), rs.getString("city"), rs.getString("house"));
+                    }
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         return null;
     }
